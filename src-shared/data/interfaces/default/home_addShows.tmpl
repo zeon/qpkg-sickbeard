@@ -1,0 +1,27 @@
+#import sickbeard
+#set global $title="Add Shows"
+
+#set global $sbPath="../.."
+
+<!--#set global $topmenu="home"#-->
+#import os.path
+#include $os.path.join($sickbeard.PROG_DIR, "data/interfaces/default/inc_top.tmpl")
+
+<h2>Add Single Show</h2>
+
+<form method="POST" action="addShows" accept-charset="utf-8">
+Single show folder: <input type="text" name="showDirs" id="showDir" size="50"> <input type="submit" value="Add Show">
+</form>
+<br />
+<br />
+<h2>Add multiple shows from a root directory</h2>
+<form method="POST" action="addRootDir" accept-charset="utf-8">
+Root show folder: <input type="text" name="dir" id="showsDir" size="50"> <input type="submit" value="Add multiple shows">
+</form>
+
+<script type="text/javascript" charset="utf-8">
+    jQuery('#showDir').fileBrowser({ title: 'Select Show Folder', key: 'showPath' });
+    jQuery('#showsDir').fileBrowser({ title: 'Select Root Show Folder', key: 'showsPath' });
+</script>
+
+#include $os.path.join($sickbeard.PROG_DIR, "data/interfaces/default/inc_bottom.tmpl")

@@ -1,0 +1,5 @@
+[SickBeard]
+host=localhost
+port=8081
+username=
+password=

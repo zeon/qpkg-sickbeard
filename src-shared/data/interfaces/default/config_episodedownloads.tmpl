@@ -1,0 +1,165 @@
+#import sickbeard
+#set global $title="Config - Episode Search"
+#set global $header="Episode Download Options"
+
+#set global $sbPath="../.."
+
+<!--#set global $topmenu="config"#-->
+#import os.path
+#include $os.path.join($sickbeard.PROG_DIR, "data/interfaces/default/inc_top.tmpl")
+
+<form action="saveEpisodeDownloads" method="POST">
+
+All non-absolute folder locations are relative to $sickbeard.PROG_DIR<br /><br />
+
+<div class="EntryBlock">
+<fieldset class="EntryFieldSet">
+
+<legend>Episode Search</legend>
+
+<label for="use_nzb"><input type="checkbox" name="use_nzb" id="use_nzb" #if $sickbeard.USE_NZB == True then "CHECKED" else ""#> <strong>NZBs</strong></label><br />
+Whether or not we should search NZB sites<br />
+<br />
+
+<label for="use_torrent"><input type="checkbox" name="use_torrent" id="use_torrent" #if $sickbeard.USE_TORRENT == True then "CHECKED" else ""#> <strong>Torrents</strong></label><br />
+Whether or not we should search Torrent sites<br />
+<br />
+
+<strong>Search Frequency:</strong><br />
+Time between searches (in minutes)<br />
+<input type="text" name="search_frequency" value="$sickbeard.SEARCH_FREQUENCY" size="4"><br />
+<br />
+
+<strong>Backlog Search Frequency:</strong><br />
+Time between backlog searches (in days)<br />
+<input type="text" name="backlog_search_frequency" value="$sickbeard.BACKLOG_SEARCH_FREQUENCY" size="4"><br />
+<br />
+
+</fieldset>
+</div>
+
+
+<div class="EntryBlock">
+<fieldset class="EntryFieldSet">
+
+
+<legend>NZB/Torrent Options</legend>
+
+<strong>NZB Action</strong><br />
+What to do with found NZBs<br />
+<select name="nzb_method">
+#set $nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd"}
+#for $curAction in ('sabnzbd', 'blackhole'):
+  #if $sickbeard.NZB_METHOD == $curAction:
+    #set $nzb_method = "SELECTED"
+  #else
+    #set $nzb_method = ""
+  #end if
+<option value="$curAction" $nzb_method>$nzb_method_text[$curAction]
+#end for
+</select><br />
+<br />
+
+<strong>NZB Black Hole:</strong><br />
+The directory where Sick Beard should store<br />
+your NZB files<br />
+<input type="text" name="nzb_dir" id="nzb_dir" value="$sickbeard.NZB_DIR" size="35"><br />
+<br />
+<br />
+
+<strong>Usenet Retention:</strong><br />
+How old should a report be before we don't download it<br />
+<input type="text" name="usenet_retention" value="$sickbeard.USENET_RETENTION" size="4"><br />
+<br />
+
+
+<strong>Torrent Black Hole:</strong><br />
+The directory where Sick Beard should store<br />
+your torrent files<br />
+<input type="text" name="torrent_dir" id="torrent_dir" value="$sickbeard.TORRENT_DIR" size="35"><br />
+<br />
+
+</fieldset>
+</div>
+
+
+
+<div class="EntryBlock">
+<fieldset class="EntryFieldSet">
+
+<legend>SABnzbd</legend>
+
+<strong>Username:</strong><br />
+Your SABnzbd authentication username<br />
+<input type="text" name="sab_username" value="$sickbeard.SAB_USERNAME" size="10"><br />
+<br />
+
+<strong>Password:</strong><br />
+Your SABnzbd authentication password<br />
+<input type="password" name="sab_password" value="$sickbeard.SAB_PASSWORD" size="10"><br />
+<br />
+
+<strong>API Key:</strong><br />
+Your SABnzbd API key<br />
+<input type="text" name="sab_apikey" value="$sickbeard.SAB_APIKEY" size="35"><br />
+<br />
+
+<strong>Category:</strong><br />
+The category you want your downloads to go in (default is TV)<br />
+<input type="text" name="sab_category" value="$sickbeard.SAB_CATEGORY" size="10"><br />
+<br />
+
+<strong>IP/port:</strong><br />
+Address of your SABnzbd server (IP:port, eg. 192.168.1.100:8080)<br />
+<input type="text" name="sab_host" value="$sickbeard.SAB_HOST" size="35"><br />
+<br />
+
+</fieldset>
+</div>
+
+
+<div class="EntryBlock">
+<fieldset class="EntryFieldSet">
+
+<legend>Post-processing</legend>
+
+<strong>TV Download Dir</strong><br />
+The folder where your download client puts your TV downloads<br />
+(only needed if you're not using SAB post processing OR<br />
+if SAB and Sick Beard are on different PCs)<br />
+<input type="text" name="tv_download_dir" id="tv_download_dir" value="$sickbeard.TV_DOWNLOAD_DIR" size="30"><br />
+<br />
+
+<label for="keep_processed_dir"><input type="checkbox" name="keep_processed_dir" id="keep_processed_dir" #if $sickbeard.KEEP_PROCESSED_DIR == True then "CHECKED" else ""#> <strong>Keep folder</strong></label><br />
+If checked Sick Beard will keep the original files after<br />
+they've been processed<br />
+<br />
+
+<label for="rename_episodes"><input type="checkbox" name="rename_episodes" id="rename_episodes"#if $sickbeard.RENAME_EPISODES == True then "CHECKED" else ""#> <strong>Rename episodes</strong></label><br />
+If checked Sick Beard will rename the episode according<br />
+to the naming settings in <a href="$sbRoot/config/general">General</a><br />
+<br />
+
+<label for="process_automatically"><input type="checkbox" name="process_automatically" if="process_automatically" #if $sickbeard.PROCESS_AUTOMATICALLY == True then "CHECKED" else ""#> <strong>Scan & Process TV Download Dir</strong></label><br />
+Will scan your <i>TV Download Dir</i> and attempt to<br />
+post-process every file it finds.<br />
+NOTE: If you use sabToSickbeard w/ SABnzbd+ do not check this!<br />
+<br />
+
+</fieldset>
+</div>
+
+
+<p>
+<input type="submit" value="Save Changes">
+</p>
+</form>
+
+
+<script type="text/javascript" charset="utf-8">
+    jQuery('#nzb_dir').fileBrowser({ title: 'Select NZB Black Hole/Watch Directory' });
+    jQuery('#torrent_dir').fileBrowser({ title: 'Select Torrent Black Hole/Watch Directory' });
+    jQuery('#tv_download_dir').fileBrowser({ title: 'Select TV Download directory' });
+</script>
+
+#include $os.path.join($sickbeard.PROG_DIR, "data/interfaces/default/inc_bottom.tmpl")
