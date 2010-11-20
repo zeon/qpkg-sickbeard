@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -32,13 +32,13 @@ from sickbeard import tvcache
 from sickbeard.common import *
 
 class TVBinzProvider(generic.NZBProvider):
-	
+
 	def __init__(self):
-		
+
 		generic.NZBProvider.__init__(self, "TVBinz")
-		
+
 		self.cache = TVBinzCache(self)
-		
+
 		self.url = 'http://www.tvbinz.net/'
 
 	def isEnabled(self):
@@ -49,71 +49,51 @@ class TVBinzProvider(generic.NZBProvider):
 			raise exceptions.AuthException("TVBinz authentication details are empty, check your config")
 
 	def getURL (self, url):
-	
-		searchHeaders = {"Cookie": "uid=" + sickbeard.TVBINZ_UID + ";hash=" + sickbeard.TVBINZ_HASH + ";auth=" + sickbeard.TVBINZ_AUTH,
-						 'Accept-encoding': 'gzip',
-						 'User-Agent': classes.SickBeardURLopener().version}
-		req = urllib2.Request(url=url, headers=searchHeaders)
-		
-		try:
-			f = urllib2.urlopen(req)
-		except (urllib.ContentTooShortError, IOError), e:
-			logger.log("Error loading TVBinz URL: " + str(sys.exc_info()) + " - " + str(e))
-			return None
-	
-		result = helpers.getGZippedURL(f)
-	
+
+		cookie_header = ("Cookie", "uid=" + sickbeard.TVBINZ_UID + ";hash=" + sickbeard.TVBINZ_HASH + ";auth=" + sickbeard.TVBINZ_AUTH)
+
+		result = generic.NZBProvider.getURL(self, url, [cookie_header])
+
 		return result
 
 
-def findEpisode (episode, manualSearch=False):
-
-	nzbResults = generic.NZBProvider.findEpisode(self, episode, manualSearch)
-
-	# append auth
-	urlParams = {'i': sickbeard.TVBINZ_SABUID, 'h': sickbeard.TVBINZ_HASH}
-	for curResult in nzbResults:
-		curResult.url += "&" + urllib.urlencode(urlParams) 
-
-	return nzbResults
-		
-
 
 class TVBinzCache(tvcache.TVCache):
-	
+
 	def __init__(self, provider):
+
+		tvcache.TVCache.__init__(self, provider)
 
 		# only poll TVBinz every 10 minutes max
 		self.minTime = 10
-		
-		tvcache.TVCache.__init__(self, provider)
-	
-	def getRSSData(self):
+
+	def _getRSSData(self):
 		# get all records since the last timestamp
-		url = self.url + "rss.php?"
-		
+		url = self.provider.url + "rss.php?"
+
 		urlArgs = {'normalize': 1012,
 				   'n': 100,
 				   'maxage': sickbeard.USENET_RETENTION,
 				   'seriesinfo': 1,
 				   'nodupes': 1,
-				   'sets': 'none'}
+				   'sets': 'none',
+                   'addauth': '1'}
 
 		url += urllib.urlencode(urlArgs)
-		
-		logger.log("TVBinz cache update URL: "+ url, logger.DEBUG)
-		
+
+		logger.log(u"TVBinz cache update URL: "+ url, logger.DEBUG)
+
 		data = self.provider.getURL(url)
-		
+
 		return data
-	
+
 	def _parseItem(self, item):
 
 		if item.findtext('title') != None and item.findtext('title') == "You must be logged in to view this feed":
 			raise exceptions.AuthException("TVBinz authentication details are incorrect, check your config")
 
 		if item.findtext('title') == None or item.findtext('link') == None:
-			logger.log("The XML returned from the TVBinz RSS feed is incomplete, this result is unusable: "+str(item), logger.ERROR)
+			logger.log(u"The XML returned from the TVBinz RSS feed is incomplete, this result is unusable: "+str(item), logger.ERROR)
 			return
 
 		title = item.findtext('title')
@@ -121,18 +101,18 @@ class TVBinzCache(tvcache.TVCache):
 
 		sInfo = item.find('{http://tvbinz.net/rss/tvb/}seriesInfo')
 		if sInfo == None:
-			logger.log("No series info, this is some kind of non-standard release, ignoring it", logger.DEBUG)
+			logger.log(u"No series info, this is some kind of non-standard release, ignoring it", logger.DEBUG)
 			return
 
-		logger.log("Adding item from RSS to cache: "+title, logger.DEBUG)			
+		logger.log(u"Adding item from RSS to cache: "+title, logger.DEBUG)
 
 		quality = Quality.nameQuality(title)
-		
+
 		if sInfo.findtext('{http://tvbinz.net/rss/tvb/}tvrID') == None:
 			tvrid = 0
 		else:
 			tvrid = int(sInfo.findtext('{http://tvbinz.net/rss/tvb/}tvrID'))
-		
+
 		# since TVBinz normalizes the scene names it's more reliable to parse the episodes out myself
 		# than to rely on it, because it doesn't support multi-episode numbers in the feed
 		self._addCacheEntry(title, url, tvrage_id=tvrid, quality=quality)

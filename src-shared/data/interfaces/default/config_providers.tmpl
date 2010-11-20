@@ -56,12 +56,12 @@ you want them to be searched<br />
     <input type="checkbox" id="enable_$curName" class="enabler" #if $curProvider.isEnabled() then "CHECKED" else ""#>
     <a href="$curProvider.url" class="imgLink" target="_new"><img src="$sbRoot/images/providers/$imgName" alt="$curProvider.name" width="16" height="16"></a>
     $curProvider.name
+    #if not $curProvider.supportsBacklog then "*" else ""#
   </li>
 #end for
 </ul>
 <br />
 <input type="hidden" name="provider_order" id="provider_order" value="<%=" ".join([x.getID()+':'+str(int(x.isEnabled())) for x in sickbeard.providers.sortedProviderList()])%>">
-
 </fieldset>
 </div>
 
@@ -73,8 +73,9 @@ you want them to be searched<br />
 <b>Edit: </b> <select id="editAProvider">
 #if $sickbeard.SHOW_TVBINZ then "<option value=\"tvbinz\">TVBinz" else ""#
 <option value="nzbs_org">NZBs.org
-<option value="nzbmatrix">NZBMatrix
 <option value="nzbs_r_us">NZBs'R'US
+<option value="newzbin">Newzbin
+<option value="nzbmatrix">NZBMatrix
 </select>
 <br />
 <br />
@@ -85,11 +86,6 @@ you want them to be searched<br />
 <strong>Cookie UID:</strong><br />
 TVBinz cookie UID<br />
 <input type="text" name="tvbinz_uid" value="$sickbeard.TVBINZ_UID" size="6"><br />
-<br />
-
-<strong>SAB UID:</strong><br />
-SAB UID (only required if sending NZBs directly to SAB)<br />
-<input type="text" name="tvbinz_sabuid" value="$sickbeard.TVBINZ_SABUID" size="6"><br />
 <br />
 
 <strong>Hash:</strong><br />
@@ -115,8 +111,6 @@ NZBs.org UID<br />
 <strong>Hash:</strong><br />
 NZBs.org hash<br />
 <input type="text" name="nzbs_org_hash" value="$sickbeard.NZBS_HASH" size="35"><br />
-<br />
-
 </div>
 
 
@@ -130,6 +124,20 @@ NZBMatrix username<br />
 <strong>API Key:</strong><br />
 NZBMatrix API Key<br />
 <input type="text" name="nzbmatrix_apikey" value="$sickbeard.NZBMATRIX_APIKEY" size="35"><br />
+<br />
+
+</div>
+
+<div class="providerDiv" id="newzbin">
+
+<strong>Username:</strong><br />
+Newzbin username<br />
+<input type="text" name="newzbin_username" value="$sickbeard.NEWZBIN_USERNAME" size="6"><br />
+<br />
+
+<strong>Password:</strong><br />
+Newzbin Password<br />
+<input type="password" name="newzbin_password" value="$sickbeard.NEWZBIN_PASSWORD" size="6"><br />
 <br />
 
 </div>
@@ -159,9 +167,6 @@ NZBs'R'US hash<br />
 <input type="hidden" name="newznab_string" id="newznab_string">
 <select id="editANewznabProvider">
 <option value="addNewznab">-- add new provider --</option>
-#for $curNewznabProvider in $sickbeard.newznabProviderList:
-<!--<option value="$curNewznabProvider.getID()">$curNewznabProvider.name-->
-#end for
 </select>
 <br />
 <br />
@@ -172,7 +177,7 @@ NZBs'R'US hash<br />
 <input type="text" id="newznab_name"><br />
 <strong>Site URL</strong><br /><input type="text" id="newznab_url"><br />
 <br />
-<strong>RSS Key</strong><br /><input type="text" id="newznab_key"><br />
+<strong>API Key</strong><br /><input type="text" id="newznab_key"><br />
 (leave blank if not required)<br />
 <br />
 <div id="newznab_add_div"><input type="button" class="newznab_save" id="newznab_add" value="Add"></div>
@@ -186,9 +191,8 @@ NZBs'R'US hash<br />
 
 
 
-<p>
-<input type="submit" value="Save Changes">
-</p>
+<p>* This provider doesn't support backlog, it provides new episodes via RSS only</p>
+<p><input type="submit" value="Save Changes"></p>
 </form>
 
 

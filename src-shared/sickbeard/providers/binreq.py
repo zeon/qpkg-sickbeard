@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -29,13 +29,13 @@ from sickbeard.common import *
 from sickbeard import tvcache
 
 class BinReqProvider(generic.NZBProvider):
-	
+
 	def __init__(self):
-		
+
 		generic.NZBProvider.__init__(self, "Bin-Req")
-		
+
 		self.cache = BinReqCache(self)
-		
+
 		self.url = 'http://www.bin-req.net/'
 
 	def isEnabled(self):
@@ -43,26 +43,26 @@ class BinReqProvider(generic.NZBProvider):
 
 
 class BinReqCache(tvcache.TVCache):
-	
+
 	def __init__(self, provider):
+
+		tvcache.TVCache.__init__(self, provider)
 
 		# only poll Bin-Req every 15 minutes max
 		self.minTime = 15
-		
-		tvcache.TVCache.__init__(self, provider)
 
 	def _getRSSData(self):
 		url = self.provider.url + 'rss.php?'
 		urlArgs = {'id': 3}
 
 		url += urllib.urlencode(urlArgs)
-		
-		logger.log("Bin-Req cache update URL: "+ url, logger.DEBUG)
-		
+
+		logger.log(u"Bin-Req cache update URL: "+ url, logger.DEBUG)
+
 		data = self.provider.getURL(url)
-		
+
 		return data
-	
+
 	def _checkAuth(self, data):
 		return data != 'Invalid Link'
 
