@@ -1,5 +1,12 @@
 This QPKG contains the source files of applications obtained/downloaded from the URLs shown below:
 
-- SickBeard alpha2-3
+- SickBeard alpha-master
 git clone https://github.com/midgetspy/Sick-Beard.git
+
+To build:
+1) git clone https://github.com/zeon/qpkg-sdk.git
+2) cd qpkg-sdk/apps
+3) git clone git clone https://github.com/zeon/qpkg-sickbeard.git sickbeard
+4) cd sickbeard
+5) ../build.sh x86
 
