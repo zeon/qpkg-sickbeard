@@ -13,7 +13,7 @@ http://security.debian.org/debian-security/pool/updates/main/d/dpkg/dpkg_1.14.29
 - To build:
 1) git clone https://github.com/zeon/qpkg-sdk.git
 2) cd qpkg-sdk/apps
-3) git clone git clone https://github.com/zeon/qpkg-sickbeard.git sickbeard
+3) git clone https://github.com/zeon/qpkg-sickbeard.git sickbeard
 4) cd sickbeard
 5) ../build.sh x86
 
