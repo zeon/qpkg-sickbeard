@@ -1,12 +1,20 @@
 This QPKG contains the source files of applications obtained/downloaded from the URLs shown below:
 
-- SickBeard alpha-master
+- SickBeard alpha-master (source located under the src-shared/)
 git clone https://github.com/midgetspy/Sick-Beard.git
 
-To build:
+- Cheetah v2.1.0 (python module located under python_libs/)
+http://downloads.sourceforge.net/project/cheetahtemplate/Cheetah/v2.1.0/Cheetah-2.1.0.tar.gz
+* built using python 2.7 QPKG with native gcc compiler
+
+- Start-stop-daemon (binary located under bin/)
+http://security.debian.org/debian-security/pool/updates/main/d/dpkg/dpkg_1.14.29+b1_i386.deb
+
+- To build:
 1) git clone https://github.com/zeon/qpkg-sdk.git
 2) cd qpkg-sdk/apps
 3) git clone git clone https://github.com/zeon/qpkg-sickbeard.git sickbeard
 4) cd sickbeard
 5) ../build.sh x86
+
 
