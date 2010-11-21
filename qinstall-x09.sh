@@ -393,6 +393,8 @@ install()
 		$CMD_SYNC
 		QPKG_INSTALL_MSG="${QPKG_NAME} ${QPKG_VER} has been installed in $QPKG_DIR."
 		$CMD_ECHO "$QPKG_INSTALL_MSG"
+
+		/etc/init.d/${QPKG_SERVICE_PROGRAM} start
 		_exit 0
 	else
 		QPKG_INSTALL_MSG="${QPKG_NAME} ${QPKG_VER} installation failed. ${QPKG_SOURCE_DIR}/${QPKG_SOURCE_FILE} file not found."
@@ -415,6 +417,5 @@ $CMD_ECHO "$UPDATE_PB" > ${UPDATE_PROCESS}
 $CMD_SLEEP 5
 $CMD_SYNC
 install
-
 
 
