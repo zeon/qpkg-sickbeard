@@ -1,7 +1,0 @@
-*.pyc
-cache/*
-cache.db
-config.ini
-Logs/*
-sickbeard.db*
-autoProcessTV/autoProcessTV.cfg
